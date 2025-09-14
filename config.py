@@ -3,7 +3,7 @@ Configuration settings for QuintoAndar scraper
 """
 
 # Scraping configuration
-BAIRRO = "santana"
+BAIRRO = "vila-leopoldina"
 BASE_URL = "https://www.quintoandar.com.br"
 LISTING_URL = f"{BASE_URL}/alugar/imovel/{BAIRRO}-sao-paulo-sp-brasil"
 

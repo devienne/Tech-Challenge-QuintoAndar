@@ -44,7 +44,7 @@ def create_data_directories():
 def save_results(properties: List[PropertyInfo], filename: str = None) -> None:
     """Save results to CSV file"""
     if not filename:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d")
         filename = f"quintoandar_{BAIRRO}_{timestamp}.csv"
     
     # Convert PropertyInfo objects to dictionaries
@@ -103,7 +103,7 @@ def load_urls_from_file(filename: str) -> List[str]:
 def save_urls_to_file(urls: List[str], filename: str = None) -> None:
     """Save URLs to a text file"""
     if not filename:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d")
         filename = f"urls_{BAIRRO}_{timestamp}.txt"
 
     # create datavbase/data folder if not yet existent
