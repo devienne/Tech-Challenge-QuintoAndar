@@ -1,7 +1,5 @@
 # QuintoAndar Property Scraper
 
-A robust, modular web scraper for extracting rental property data from QuintoAndar.com.br. This optimized version addresses the address extraction issues from the original notebook and provides better error handling, logging, and data organization.
-
 ## Features
 
 - **Improved Address Extraction**: Multiple fallback strategies to capture property addresses
