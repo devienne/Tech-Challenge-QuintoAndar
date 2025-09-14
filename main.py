@@ -29,8 +29,7 @@ def setup_logging() -> None:
         level=getattr(logging, LOG_LEVEL),
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.StreamHandler(sys.stdout),
-            logging.FileHandler(f'scraper_{BAIRRO}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')
+            logging.StreamHandler(sys.stdout)
         ]
     )
 
