@@ -34,6 +34,13 @@ def setup_logging() -> None:
         ]
     )
 
+@staticmethod
+def create_data_directories():
+    data = "database/data"
+    urls = "database/urls"
+    os.makedirs(data, exist_ok=True)
+    os.makedirs(urls, exist_ok=True)
+    return data, urls
 
 def save_results(properties: List[PropertyInfo], filename: str = None) -> None:
     """Save results to CSV file"""
@@ -59,10 +66,11 @@ def save_results(properties: List[PropertyInfo], filename: str = None) -> None:
         ordered_cols = [col for col in first_cols if col in df.columns] + price_cols
         df = df[ordered_cols]
     
-    if not os.path.exists('data'):
-        filepath = 0
+    # create datavbase/data folder if not yet existent
+    data_folder, _ = create_data_directories()
     # Save to CSV
-    df.to_csv(filename, index=False, encoding='utf-8-sig')
+    filepath = os.path.join(data_folder, filename)
+    df.to_csv(filepath, index=False, encoding='utf-8-sig')
     
     # Print statistics
     total = len(df)
@@ -80,12 +88,16 @@ def save_results(properties: List[PropertyInfo], filename: str = None) -> None:
 def load_urls_from_file(filename: str) -> List[str]:
     """Load URLs from a text file (one URL per line)"""
     try:
-        with open(filename, 'r', encoding='utf-8') as f:
+        # create datavbase/data folder if not yet existent
+        _, urls_folder = create_data_directories()
+        # Save to CSV
+        filepath = os.path.join(urls_folder, filename)
+        with open(filepath, 'r', encoding='utf-8') as f:
             urls = [line.strip() for line in f if line.strip()]
         print(f"Loaded {len(urls)} URLs from {filename}")
         return urls
     except FileNotFoundError:
-        print(f"File {filename} not found")
+        print(f"File {filepath} not found")
         return []
 
 
@@ -94,8 +106,13 @@ def save_urls_to_file(urls: List[str], filename: str = None) -> None:
     if not filename:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"urls_{BAIRRO}_{timestamp}.txt"
+
+    # create datavbase/data folder if not yet existent
+    _, urls_folder = create_data_directories()
+    # Save to CSV
+    filepath = os.path.join(urls_folder, filename)
     
-    with open(filename, 'w', encoding='utf-8') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         for url in urls:
             f.write(f"{url}\n")
     
