@@ -17,7 +17,7 @@ try:
 except ImportError:
     pass
 
-from config import OUTPUT_FILE, LOG_LEVEL, BAIRRO
+from config import LOG_LEVEL, BAIRRO
 from url_collector import collect_urls
 from http_client import fetch_properties
 from models import PropertyInfo
@@ -130,7 +130,6 @@ async def main():
     try:
         # Step 1: Collect URLs
         print("\n1. Collecting property URLs...")
-        
         # Check if we should load URLs from file
         urls_file = f"urls_{BAIRRO}.txt"
         if Path(urls_file).exists():

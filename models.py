@@ -74,7 +74,7 @@ class PropertyInfo:
         # Handle both regular space and non-breaking space
         text = text.replace("\xa0", " ")
         m = re.search(r"(\d+)\s*m²", text)
-        return f"{m.group(1)} m²" if m else None
+        return f"{m.group(1)}" if m else None
     
     def update_from_text(self, text: str) -> None:
         """Update property info from parsed text"""
@@ -83,31 +83,55 @@ class PropertyInfo:
             
         text_lower = text.lower()
         
-        # Area
-        if "m²" in text and not self.area:
-            self.area = self.clean_area(text)
+        #  Area - handle both "m²" and "mÂ²" encoding issues
+        if ("m²" in text or "mâ²" in text_lower) and not self.area:
+            # Only set area if it's not already set and this looks like area info
+            if "quarto" not in text_lower:  # Don't confuse with room descriptions
+                self.area = self.clean_area(text)
         
-        # Rooms
+        # Rooms - be more specific about room parsing
         elif "quarto" in text_lower:
-            q = self.parse_number(text)
-            if q is not None:
-                self.quartos = q
+            # Extract number, but be careful not to get area numbers
+            room_match = re.search(r"(\d+)\s*quarto", text_lower)
+            if room_match:
+                q = int(room_match.group(1))
+                # Sanity check: rooms should be reasonable (1-10)
+                if 1 <= q <= 10:
+                    self.quartos = q
+            
             # Check for suite
             if "suíte" in text_lower or "suite" in text_lower:
-                s_match = re.search(r"\((\d+)\s*su[ií]te", text, flags=re.IGNORECASE)
-                self.suite = int(s_match.group(1)) if s_match else 1
+                s_match = re.search(r"(\d+)\s*su[ií]te", text, flags=re.IGNORECASE)
+                if s_match:
+                    suite_count = int(s_match.group(1))
+                    if 1 <= suite_count <= 5:  # Sanity check
+                        self.suite = suite_count
+                else:
+                    # If "suite" is mentioned but no number, assume 1
+                    self.suite = 1
         
         # Bathrooms
         elif "banheiro" in text_lower:
-            b = self.parse_number(text)
-            if b is not None:
-                self.banheiros = b
+            bath_match = re.search(r"(\d+)\s*banheiro", text_lower)
+            if bath_match:
+                b = int(bath_match.group(1))
+                if 1 <= b <= 10:  # Sanity check
+                    self.banheiros = b
         
         # Parking spots
         elif "vaga" in text_lower:
-            v = self.parse_number(text)
-            if v is not None:
-                self.vagas = v
+            vaga_match = re.search(r"(\d+)\s*vaga", text_lower)
+            if vaga_match:
+                v = int(vaga_match.group(1))
+                print(f'######################################################## {vaga_match}')
+                print(f'######################################################## {v}')
+                if 0 <= v <= 10:  # Sanity check
+                    self.vagas = v
+                elif v !=v:
+                    self.vagas = 0
+            elif "sem vaga" in text_lower:
+                self.vagas = 0
+            
         
         # Floor
         elif "andar" in text_lower and self.andar is None:
