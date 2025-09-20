@@ -150,7 +150,7 @@ class URLCollector:
             no_progress_count = 0
             max_no_progress = 3
             
-            while len(all_urls)<=100:
+            while len(all_urls)<=1e6:
                 # Collect current URLs
                 current_urls = self._collect_current_urls()
                 new_urls = current_urls - all_urls
